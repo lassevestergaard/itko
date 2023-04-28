@@ -1,0 +1,103 @@
+<!doctype html>
+  <head>
+    <title>Tabellen studerende</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <style>
+      table{
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+
+      th, td{
+        border: 1px solid black;
+        padding:5px;
+      }
+
+      .number{
+        text-align: right;
+      }
+
+      #menu{
+        margin:10px;
+      }
+
+      input{
+        margin-bottom: 10px;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("#all_students").click(function(){
+          getData();
+        });
+
+        $("#search_btn").click(function(){
+          getData($("#search_id").val());
+        });
+
+
+        getData();
+      });
+
+
+      function getData(id=null){
+        url = "";
+
+        if(id == "" || id == "Indsæt ID"){
+          console.log("No data sent");
+          return;
+        } else if(id)
+          url = "https://itko.artict.eu/findStudentById?id=" + id;
+        else
+          url = "https://itko.artict.eu/getAllStudents";
+
+        $.get(url, function(data) {
+          populateTable(data);
+        }).fail(function(e) {
+          console.log("Database did not understand the query");
+        });
+      }
+
+
+      function populateTable(data){
+        $("#student_info").empty();
+
+        let tr = $("<tr />").appendTo($("#student_info"));
+        $.each(data[0], function(k, v){
+          $("<th />",{
+            text: k,
+          }).appendTo(tr);
+        });
+
+        data.forEach(function(item, index){
+          let trow = $("<tr />").appendTo($("#student_info"));
+
+          $.each( item, function(key, value) {
+            $("<td />",{
+              text: value,
+              class: Number.isInteger(value) ? "number" : "text"
+            }).appendTo(trow);
+          });
+        });
+      }
+    </script>
+
+    <div id="menu">
+      <input type="button" id="all_students" value="Se alle studerende"/>
+
+      <div>
+        <input type="text" onfocus="this.value=''" onblur="if(!this.value)this.value='Indsæt ID'" id="search_id" value="Indsæt ID"/>
+        <input type="button" id="search_btn" value="Søg"/>
+      </div>
+    </div>
+
+    <div>
+      <table id="student_info"></table>
+    </div>
+  </body>
+</html>
