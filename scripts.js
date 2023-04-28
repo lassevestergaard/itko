@@ -9,7 +9,7 @@ $(".fa-search").click(function(){
 
 
 function getData(id){
-  $.get("https://itko.artict.eu/findStudentById?id=" + id, function(data) {
+  $.get("https://expressjs-server-production-0a38.up.railway.app/findStudentById?id=" + id, function(data) {
     populateTable(data);
   }).fail(function(e) {
     error_message("Databasen forstod ikke forespørgslen");
